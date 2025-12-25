@@ -1,4 +1,5 @@
 
+using DrivingLicense.Application.Interfaces;
 using DrivingLicense.Infrastructure.Authentication;
 using DrivingLicense.Infrastructure.Data;
 using DrivingLicense.Infrastructure.Data.Seed;
@@ -49,6 +50,22 @@ builder.Services.AddSwaggerGen(option =>
         }
     });
 });
+#endregion
+
+#region  CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
+#endregion
+
+#region Services
+builder.Services.AddScoped<ITokenService, JwtTokenService>();
 #endregion
 
 #region Indentity
@@ -130,5 +147,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors("AllowAll");
 
 app.Run();
