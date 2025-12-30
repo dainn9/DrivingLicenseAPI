@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DrivingLicense.Infrastructure.Repositories.Common
 {
-    public class Repository<T> : IRepository<T> where T : BaseEntity
+    public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         protected readonly DrivingDbContext _context;
-        public Repository(DrivingDbContext context)
+        public GenericRepository(DrivingDbContext context)
         {
             _context = context;
         }
