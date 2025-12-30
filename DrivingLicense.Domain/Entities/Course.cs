@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DrivingLicense.Domain.Entities.Common;
 using DrivingLicense.Domain.Enums;
 
 namespace DrivingLicense.Domain.Entities
 {
-    public class Course
+    public class Course : BaseEntity
     {
-        public Guid CourseId { get; set; }
         public string CourseName { get; set; } = null!;
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }

@@ -14,7 +14,10 @@ namespace DrivingLicense.Infrastructure.Data.Configurations
         {
             builder.ToTable("ExamRegistrations");
 
-            builder.HasKey(er => er.ExamRegisId);
+            builder.HasKey(er => er.Id);
+
+            builder.Property(er => er.Id)
+                   .HasColumnName("ExamRegisId");
 
             builder.HasIndex(er => new { er.FileId, er.ExamSessionId })
                    .IsUnique();

@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using DrivingLicense.Domain.Entities.Common;
 using DrivingLicense.Domain.Enums;
 
 namespace DrivingLicense.Domain.Entities
 {
-    public class RegisterFile
+    public class RegisterFile : BaseEntity
     {
-        public Guid RegisterFileId { get; set; }
         public DateOnly SubmissionDate { get; set; }
         public string? PortraitPhoto { get; set; }
         public string? IdentityDoc { get; set; }

@@ -14,7 +14,10 @@ namespace DrivingLicense.Infrastructure.Data.Configurations
         {
             builder.ToTable("ExamResults");
 
-            builder.HasKey(er => er.ResultId);
+            builder.HasKey(er => er.Id);
+
+            builder.Property(er => er.Id)
+                .HasColumnName("ResultId");
 
             builder.HasOne(er => er.ExamRegistration)
                 .WithOne(er => er.ExamResult)

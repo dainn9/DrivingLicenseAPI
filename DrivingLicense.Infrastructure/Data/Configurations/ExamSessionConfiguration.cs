@@ -14,7 +14,10 @@ namespace DrivingLicense.Infrastructure.Data.Configurations
         {
             builder.ToTable("ExamSessions");
 
-            builder.HasKey(es => es.ExamSessionId);
+            builder.HasKey(es => es.Id);
+
+            builder.Property(es => es.Id)
+                .HasColumnName("ExamSessionId");
 
             builder.ToTable(es => es.HasCheckConstraint("CK_ExamSessions_TimeRange", "[StartTime] < [EndTime]"));
 

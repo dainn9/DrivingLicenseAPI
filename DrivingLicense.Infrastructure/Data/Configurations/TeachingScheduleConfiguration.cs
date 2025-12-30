@@ -14,7 +14,10 @@ namespace DrivingLicense.Infrastructure.Data.Configurations
         {
             builder.ToTable("TeachingSchedules");
 
-            builder.HasKey(ts => ts.ScheduleId);
+            builder.HasKey(ts => ts.Id);
+
+            builder.Property(ts => ts.Id)
+                .HasColumnName("ScheduleId");
 
             builder.Property(ts => ts.StartTime)
                 .IsRequired();

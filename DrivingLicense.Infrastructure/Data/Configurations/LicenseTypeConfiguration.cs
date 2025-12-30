@@ -14,13 +14,19 @@ namespace DrivingLicense.Infrastructure.Data.Configurations
         {
             builder.ToTable("LicenseTypes");
 
-            builder.HasKey(lt => lt.LicenseTypeId);
+            builder.HasKey(lt => lt.Id);
+
+            builder.Property(lt => lt.Id)
+                   .HasColumnName("LicenseTypeId");
 
             builder.HasIndex(lt => lt.LicenseTypeName)
                    .IsUnique();
 
             builder.Property(lt => lt.LicenseTypeName)
                    .HasMaxLength(50);
+
+            builder.Property(lt => lt.LicenseTypeDescription)
+                    .HasMaxLength(250);
         }
     }
 }

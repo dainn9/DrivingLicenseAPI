@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using DrivingLicense.Domain.Entities.Common;
 
 namespace DrivingLicense.Domain.Entities
 {
-    public class LicenseType
+    public class LicenseType : BaseEntity
     {
-        public Guid LicenseTypeId { get; set; }
         public string LicenseTypeName { get; set; } = null!;
         public string LicenseTypeDescription { get; set; } = null!;
 

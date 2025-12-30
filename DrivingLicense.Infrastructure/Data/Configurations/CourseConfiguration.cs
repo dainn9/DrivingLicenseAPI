@@ -14,7 +14,10 @@ namespace DrivingLicense.Infrastructure.Data.Configurations
         {
             builder.ToTable("Courses");
 
-            builder.HasKey(c => c.CourseId);
+            builder.HasKey(c => c.Id);
+
+            builder.Property(c => c.Id)
+                   .HasColumnName("CourseId");
 
             builder.Property(c => c.CourseName)
                 .IsRequired()

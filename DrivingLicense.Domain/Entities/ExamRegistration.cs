@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using DrivingLicense.Domain.Entities.Common;
 
 namespace DrivingLicense.Domain.Entities
 {
-    public class ExamRegistration
+    public class ExamRegistration : BaseEntity
     {
-        public Guid ExamRegisId { get; set; }
         public Guid FileId { get; set; }
         public Guid ExamSessionId { get; set; }
 

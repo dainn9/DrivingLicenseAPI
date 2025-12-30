@@ -14,7 +14,10 @@ namespace DrivingLicense.Infrastructure.Data.Configurations
         {
             builder.ToTable("RegisterFiles");
 
-            builder.HasKey(rf => rf.RegisterFileId);
+            builder.HasKey(rf => rf.Id);
+
+            builder.Property(rf => rf.Id)
+                   .HasColumnName("RegisterFileId");
 
             builder.Property(rf => rf.SubmissionDate)
                     .IsRequired();
