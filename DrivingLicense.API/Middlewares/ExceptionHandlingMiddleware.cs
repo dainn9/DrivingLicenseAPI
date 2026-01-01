@@ -70,7 +70,7 @@ namespace DrivingLicense.API.Middlewares
 
             var response = ApiResponse<string>.FailureResponse(message);
 
-            await httpContext.Response.WriteAsync(JsonSerializer.Serialize(response));
+            await httpContext.Response.WriteAsJsonAsync(response);
         }
     }
 }
