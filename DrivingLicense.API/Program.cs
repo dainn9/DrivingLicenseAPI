@@ -1,10 +1,17 @@
 
+using System.Text.Json;
+using DrivingLicense.API.Middlewares;
+using DrivingLicense.Application.Common.ApiResponses;
 using DrivingLicense.Application.Interfaces;
+using DrivingLicense.Application.Services;
+using DrivingLicense.Domain.Interfaces;
 using DrivingLicense.Infrastructure.Authentication;
 using DrivingLicense.Infrastructure.Data;
 using DrivingLicense.Infrastructure.Data.Seed;
+using DrivingLicense.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -65,8 +72,14 @@ builder.Services.AddCors(options =>
 });
 #endregion
 
+#region Repositories
+builder.Services.AddScoped<ILicenseTypeRepository, LicenseTypeRepository>();
+#endregion
+
 #region Services
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
+builder.Services.AddScoped<ILicenseTypeService, LicenseTypeService>();
 #endregion
 
 #region Indentity
@@ -122,10 +135,64 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = issuer,
         IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secret))
     };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnChallenge = context =>
+        {
+            context.HandleResponse();
+
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            context.Response.ContentType = "application/json";
+
+            var response = ApiResponse<object>.FailureResponse("You are not authorized to access this resource.");
+            var json = JsonSerializer.Serialize(response, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+
+            return context.Response.WriteAsync(json);
+        },
+
+        OnForbidden = context =>
+        {
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+            context.Response.ContentType = "application/json";
+
+            var response = ApiResponse<object>.FailureResponse("You do not have permission to access this resource.");
+            var json = JsonSerializer.Serialize(response, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+
+            return context.Response.WriteAsync(json);
+        }
+    };
 });
 #endregion
 
+
+#region ModelState Validation Response
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var errors = context.ModelState
+                .Where(e => e.Value != null && e.Value?.Errors.Count > 0)
+                .SelectMany(e => e.Value!.Errors)
+                .Select(e => e.ErrorMessage)
+                .ToList();
+
+            var response = ApiResponse<object>.FailureResponse(errors);
+            return new BadRequestObjectResult(response);
+        };
+    });
+
+#endregion
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 #region SeedRoles
 using (var scope = app.Services.CreateScope())
@@ -142,6 +209,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 
 app.UseAuthentication();
 
