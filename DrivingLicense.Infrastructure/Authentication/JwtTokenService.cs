@@ -29,7 +29,7 @@ namespace DrivingLicense.Infrastructure.Authentication
 
             if (secret is null || issuer is null || audience is null)
             {
-                throw new ApplicationException("Jwt is not set in the configuration");
+                throw new InvalidOperationException("Jwt is not set in the configuration");
             }
 
             var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));

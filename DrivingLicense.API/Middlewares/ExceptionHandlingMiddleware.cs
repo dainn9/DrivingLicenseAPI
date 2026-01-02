@@ -2,6 +2,7 @@ using System.Net;
 using System.Text.Json;
 using DrivingLicense.Application.Common.ApiResponses;
 using DrivingLicense.Application.Common.Exceptions;
+using Humanizer;
 
 namespace DrivingLicense.API.Middlewares
 {
@@ -57,6 +58,9 @@ namespace DrivingLicense.API.Middlewares
                 //409
                 case ConflictException:
                     httpStatusCode = HttpStatusCode.Conflict;
+                    break;
+                case InvalidOperationException:
+                    httpStatusCode = HttpStatusCode.InternalServerError;
                     break;
                 //500
                 default:

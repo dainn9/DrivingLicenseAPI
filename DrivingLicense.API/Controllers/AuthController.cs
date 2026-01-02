@@ -1,4 +1,5 @@
-﻿using DrivingLicense.Application.DTOs.Auth;
+﻿using DrivingLicense.Application.Common.ApiResponses;
+using DrivingLicense.Application.DTOs.Auth;
 using DrivingLicense.Application.Interfaces;
 using DrivingLicense.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -25,31 +26,23 @@ namespace DrivingLicense.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
         {
-            if (ModelState.IsValid)
+            var user = await _userManager.FindByNameAsync(request.Username);
+            if (user == null)
+                return Unauthorized(ApiResponse<object>.FailureResponse("Invalid username or password."));
+
+            var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
+            if (!result.Succeeded)
+                return Unauthorized(ApiResponse<object>.FailureResponse("Invalid username or password."));
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var token = _tokenService.GenerateToken(user.Id, user.UserName!, userRoles);
+
+            var response = new LoginResponseDto
             {
-                var user = await _userManager.FindByNameAsync(request.Username);
-                if (user == null)
-                {
-                    return Unauthorized("Invalid username or password.");
-                }
+                AccessToken = token,
+            };
 
-                var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
-                if (!result.Succeeded)
-                {
-                    return Unauthorized("Invalid username or password.");
-                }
-
-                var userRoles = await _userManager.GetRolesAsync(user);
-                var token = _tokenService.GenerateToken(user.Id, user.UserName!, userRoles);
-
-                var response = new LoginResponseDto
-                {
-                    AccessToken = token,
-                };
-
-                return Ok(response);
-            }
-            return BadRequest(ModelState);
+            return Ok(ApiResponse<LoginResponseDto>.SuccessResponse(response));
         }
 
         [Authorize(Roles = AppRoles.Administrator)]
@@ -57,15 +50,10 @@ namespace DrivingLicense.API.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterRequestDto request)
         {
             var existingUser = await _userManager.FindByNameAsync(request.Username);
-            if (existingUser != null)
-                ModelState.AddModelError("Username", "User name is already taken.");
-
             var existingEmail = await _userManager.FindByEmailAsync(request.Email);
-            if (existingEmail != null)
-                ModelState.AddModelError("Email", "Email is already registered.");
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            if (existingUser != null || existingEmail != null)
+                return BadRequest(ApiResponse<object>.FailureResponse("User name or Email is already registered."));
 
             var newUser = new AppUser
             {
@@ -76,14 +64,14 @@ namespace DrivingLicense.API.Controllers
 
             var result = await _userManager.CreateAsync(newUser, request.Password);
             if (!result.Succeeded)
-                return BadRequest(result.Errors);
+                return BadRequest(ApiResponse<object>.FailureResponse(result.Errors.Select(e => e.Description).ToList()));
 
             var role = request.IsAdmin ? "Administrator" : "Staff";
 
             var roleResult = await _userManager.AddToRoleAsync(newUser, role);
 
             if (!roleResult.Succeeded)
-                return BadRequest(roleResult.Errors);
+                return BadRequest(ApiResponse<object>.FailureResponse(roleResult.Errors.Select(e => e.Description).ToList()));
 
             var token = _tokenService.GenerateToken(newUser.Id, newUser.UserName!, new List<string> { role });
 
@@ -94,7 +82,7 @@ namespace DrivingLicense.API.Controllers
                 Email = newUser.Email
             };
 
-            return Ok(response);
+            return Ok(ApiResponse<RegisterResponseDto>.SuccessResponse(response));
         }
     }
 }
