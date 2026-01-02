@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DrivingLicense.Infrastructure.Migrations
 {
     [DbContext(typeof(DrivingDbContext))]
-    [Migration("20251224161124_InitialCreate")]
+    [Migration("20260102094620_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -27,9 +27,13 @@ namespace DrivingLicense.Infrastructure.Migrations
 
             modelBuilder.Entity("DrivingLicense.Domain.Entities.Course", b =>
                 {
-                    b.Property<Guid>("CourseId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("CourseId");
+
+                    b.Property<int>("Capacity")
+                        .HasColumnType("int");
 
                     b.Property<string>("CourseName")
                         .IsRequired()
@@ -42,16 +46,13 @@ namespace DrivingLicense.Infrastructure.Migrations
                     b.Property<Guid>("LicenseTypeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.HasKey("CourseId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CourseName")
                         .IsUnique();
@@ -60,17 +61,18 @@ namespace DrivingLicense.Infrastructure.Migrations
 
                     b.ToTable("Courses", null, t =>
                         {
-                            t.HasCheckConstraint("CK_Courses_EndDate_After_StartDate", "[EndDate] > [StartDate]");
+                            t.HasCheckConstraint("CK_Courses_Capacity_NonNegative", "[Capacity] >= 0");
 
-                            t.HasCheckConstraint("CK_Courses_Quantity_NonNegative", "[Quantity] >= 0");
+                            t.HasCheckConstraint("CK_Courses_EndDate_After_StartDate", "[EndDate] > [StartDate]");
                         });
                 });
 
             modelBuilder.Entity("DrivingLicense.Domain.Entities.ExamRegistration", b =>
                 {
-                    b.Property<Guid>("ExamRegisId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("ExamRegisId");
 
                     b.Property<Guid>("ExamSessionId")
                         .HasColumnType("uniqueidentifier");
@@ -78,7 +80,7 @@ namespace DrivingLicense.Infrastructure.Migrations
                     b.Property<Guid>("FileId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("ExamRegisId");
+                    b.HasKey("Id");
 
                     b.HasIndex("ExamSessionId");
 
@@ -90,9 +92,10 @@ namespace DrivingLicense.Infrastructure.Migrations
 
             modelBuilder.Entity("DrivingLicense.Domain.Entities.ExamResult", b =>
                 {
-                    b.Property<Guid>("ResultId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("ResultId");
 
                     b.Property<Guid>("ExamRegisId")
                         .HasColumnType("uniqueidentifier");
@@ -109,7 +112,7 @@ namespace DrivingLicense.Infrastructure.Migrations
                     b.Property<int>("TheoryScore")
                         .HasColumnType("int");
 
-                    b.HasKey("ResultId");
+                    b.HasKey("Id");
 
                     b.HasIndex("ExamRegisId")
                         .IsUnique();
@@ -119,9 +122,10 @@ namespace DrivingLicense.Infrastructure.Migrations
 
             modelBuilder.Entity("DrivingLicense.Domain.Entities.ExamSession", b =>
                 {
-                    b.Property<Guid>("ExamSessionId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("ExamSessionId");
 
                     b.Property<TimeOnly>("EndTime")
                         .HasColumnType("time");
@@ -146,7 +150,7 @@ namespace DrivingLicense.Infrastructure.Migrations
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
-                    b.HasKey("ExamSessionId");
+                    b.HasKey("Id");
 
                     b.HasIndex("LicenseTypeId");
 
@@ -158,20 +162,22 @@ namespace DrivingLicense.Infrastructure.Migrations
 
             modelBuilder.Entity("DrivingLicense.Domain.Entities.LicenseType", b =>
                 {
-                    b.Property<Guid>("LicenseTypeId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("LicenseTypeId");
 
                     b.Property<string>("LicenseTypeDescription")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("LicenseTypeName")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("LicenseTypeId");
+                    b.HasKey("Id");
 
                     b.HasIndex("LicenseTypeName")
                         .IsUnique();
@@ -181,9 +187,10 @@ namespace DrivingLicense.Infrastructure.Migrations
 
             modelBuilder.Entity("DrivingLicense.Domain.Entities.RegisterFile", b =>
                 {
-                    b.Property<Guid>("RegisterFileId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("RegisterFileId");
 
                     b.Property<bool>("ApplicationForm")
                         .HasColumnType("bit");
@@ -212,7 +219,7 @@ namespace DrivingLicense.Infrastructure.Migrations
                     b.Property<DateOnly>("SubmissionDate")
                         .HasColumnType("date");
 
-                    b.HasKey("RegisterFileId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CourseId");
 
@@ -336,9 +343,10 @@ namespace DrivingLicense.Infrastructure.Migrations
 
             modelBuilder.Entity("DrivingLicense.Domain.Entities.TeachingSchedule", b =>
                 {
-                    b.Property<Guid>("ScheduleId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("ScheduleId");
 
                     b.Property<Guid>("CourseId")
                         .HasColumnType("uniqueidentifier");
@@ -362,7 +370,7 @@ namespace DrivingLicense.Infrastructure.Migrations
                     b.Property<int>("TeachingType")
                         .HasColumnType("int");
 
-                    b.HasKey("ScheduleId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CourseId");
 

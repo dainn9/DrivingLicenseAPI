@@ -56,7 +56,7 @@ namespace DrivingLicense.Infrastructure.Migrations
                 {
                     LicenseTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     LicenseTypeName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    LicenseTypeDescription = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    LicenseTypeDescription = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -213,15 +213,15 @@ namespace DrivingLicense.Infrastructure.Migrations
                     CourseName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Capacity = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     LicenseTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Courses", x => x.CourseId);
+                    table.CheckConstraint("CK_Courses_Capacity_NonNegative", "[Capacity] >= 0");
                     table.CheckConstraint("CK_Courses_EndDate_After_StartDate", "[EndDate] > [StartDate]");
-                    table.CheckConstraint("CK_Courses_Quantity_NonNegative", "[Quantity] >= 0");
                     table.ForeignKey(
                         name: "FK_Courses_LicenseTypes_LicenseTypeId",
                         column: x => x.LicenseTypeId,

@@ -32,13 +32,13 @@ namespace DrivingLicense.Infrastructure.Data.Configurations
             builder.Property(c => c.EndDate)
                    .IsRequired();
 
-            builder.Property(c => c.Quantity)
+            builder.Property(c => c.Capacity)
                    .IsRequired();
 
             builder.Property(c => c.Status)
                    .IsRequired();
 
-            builder.ToTable(c => c.HasCheckConstraint("CK_Courses_Quantity_NonNegative", "[Quantity] >= 0"));
+            builder.ToTable(c => c.HasCheckConstraint("CK_Courses_Capacity_NonNegative", "[Capacity] >= 0"));
 
             builder.ToTable(c => c.HasCheckConstraint("CK_Courses_EndDate_After_StartDate", "[EndDate] > [StartDate]"));
 
