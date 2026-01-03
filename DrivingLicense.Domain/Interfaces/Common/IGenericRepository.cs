@@ -1,18 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using DrivingLicense.Domain.Entities.Common;
 
 namespace DrivingLicense.Domain.Interfaces
 {
     public interface IGenericRepository<T> where T : BaseEntity
     {
-        Task<IEnumerable<T>> GetAllAsync();
+        Task<List<T>> GetAllAsync();
         Task<T?> GetByIdAsync(Guid id);
+        Task<T?> FindAsync(Guid id);
         void Add(T entity);
         void Update(T entity);
         // void Delete(T entity);
-        // Task<bool> ExistsAsync(int id);
     }
 }

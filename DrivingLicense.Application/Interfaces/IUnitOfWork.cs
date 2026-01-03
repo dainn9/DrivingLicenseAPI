@@ -6,6 +6,7 @@ namespace DrivingLicense.Application.Interfaces
     public interface IUnitOfWork : IDisposable
     {
         ILicenseTypeRepository LicenseTypes { get; }
+        ICourseRepository Courses { get; }
         Task BeginTransactionAsync();
         Task CommitAsync();
         Task RollbackAsync();

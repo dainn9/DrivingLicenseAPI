@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using DrivingLicense.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -40,7 +36,7 @@ namespace DrivingLicense.Infrastructure.Data.Configurations
 
             builder.ToTable(c => c.HasCheckConstraint("CK_Courses_Capacity_NonNegative", "[Capacity] >= 0"));
 
-            builder.ToTable(c => c.HasCheckConstraint("CK_Courses_EndDate_After_StartDate", "[EndDate] > [StartDate]"));
+            builder.ToTable(c => c.HasCheckConstraint("CK_Courses_ValiDates", "[StartDate] >= GETDATE() && [EndDate] > [StartDate]"));
 
             builder.HasOne(c => c.LicenseType)
                    .WithMany(lt => lt.Courses)

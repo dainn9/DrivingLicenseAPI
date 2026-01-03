@@ -11,10 +11,14 @@ namespace DrivingLicense.Infrastructure.Repositories
         private IDbContextTransaction? _transaction;
         public ILicenseTypeRepository LicenseTypes { get; }
 
-        public UnitOfWork(DrivingDbContext context, ILicenseTypeRepository licenseTypeRepository)
+        public ICourseRepository Courses { get; }
+
+        public UnitOfWork(DrivingDbContext context, ILicenseTypeRepository licenseTypeRepo, ICourseRepository courseRepo)
         {
             _context = context;
-            LicenseTypes = licenseTypeRepository;
+            LicenseTypes = licenseTypeRepo;
+            Courses = courseRepo;
+
         }
 
         public async Task BeginTransactionAsync()

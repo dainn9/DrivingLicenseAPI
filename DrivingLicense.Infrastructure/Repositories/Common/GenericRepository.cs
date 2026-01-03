@@ -15,8 +15,11 @@ namespace DrivingLicense.Infrastructure.Repositories.Common
         public void Add(T entity)
             => _context.Set<T>().Add(entity);
 
-        public async Task<IEnumerable<T>> GetAllAsync()
-            => await _context.Set<T>().AsNoTracking().ToListAsync();
+        public async Task<T?> FindAsync(Guid id)
+            => await _context.Set<T>().FindAsync(id);
+
+        public Task<List<T>> GetAllAsync()
+            => _context.Set<T>().AsNoTracking().ToListAsync();
 
         public Task<T?> GetByIdAsync(Guid id)
             => _context.Set<T>().AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);

@@ -74,12 +74,14 @@ builder.Services.AddCors(options =>
 
 #region Repositories
 builder.Services.AddScoped<ILicenseTypeRepository, LicenseTypeRepository>();
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 #endregion
 
 #region Services
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
 builder.Services.AddScoped<ILicenseTypeService, LicenseTypeService>();
+builder.Services.AddScoped<ICourseService, CourseService>();
 #endregion
 
 #region Indentity

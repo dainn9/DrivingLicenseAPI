@@ -17,5 +17,8 @@ namespace DrivingLicense.Infrastructure.Repositories
             var normalized = name.Trim().ToUpper();
             return await _context.LicenseTypes.AsNoTracking().AnyAsync(lt => lt.LicenseTypeName.ToUpper() == normalized && (excludeId == null || lt.Id != excludeId));
         }
+
+        public async Task<bool> ExistsByIdAsync(Guid id)
+            => await _context.LicenseTypes.AsNoTracking().AnyAsync(lt => lt.Id == id);
     }
 }

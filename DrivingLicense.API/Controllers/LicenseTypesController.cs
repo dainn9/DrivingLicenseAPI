@@ -9,11 +9,11 @@ namespace DrivingLicense.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class LicenseTypeController : ControllerBase
+    public class LicenseTypesController : ControllerBase
     {
         private readonly ILicenseTypeService _licenseTypeService;
 
-        public LicenseTypeController(ILicenseTypeService licenseTypeService)
+        public LicenseTypesController(ILicenseTypeService licenseTypeService)
         {
             _licenseTypeService = licenseTypeService;
         }
@@ -23,13 +23,13 @@ namespace DrivingLicense.API.Controllers
         public async Task<IActionResult> Create([FromBody] LicenseTypeCreateDto dto)
         {
             var result = await _licenseTypeService.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = result.Id }, ApiResponse<LicenseTypeDto>.SuccessResponse(result));
+            return CreatedAtAction(nameof(GetById), new { licenseTypeId = result.Id }, ApiResponse<LicenseTypeDto>.SuccessResponse(result));
         }
 
-        [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetById(Guid id)
+        [HttpGet("{licenseTypeId:guid}")]
+        public async Task<IActionResult> GetById(Guid licenseTypeId)
         {
-            var licenseType = await _licenseTypeService.GetByIdAsync(id);
+            var licenseType = await _licenseTypeService.GetByIdAsync(licenseTypeId);
             return Ok(ApiResponse<LicenseTypeDto>.SuccessResponse(licenseType));
         }
 
@@ -43,10 +43,10 @@ namespace DrivingLicense.API.Controllers
         }
 
         [Authorize(Roles = AppRoles.Administrator)]
-        [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] LicenseTypeUpdateDto dto)
+        [HttpPut("{licenseTypeId:guid}")]
+        public async Task<IActionResult> Update(Guid licenseTypeId, [FromBody] LicenseTypeUpdateDto dto)
         {
-            await _licenseTypeService.UpdateAsync(id, dto);
+            await _licenseTypeService.UpdateAsync(licenseTypeId, dto);
             return NoContent();
         }
 

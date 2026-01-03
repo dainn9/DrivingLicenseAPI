@@ -26,14 +26,11 @@ namespace DrivingLicense.Application.Services
             return entity.ToDto();
         }
 
-        public async Task<IEnumerable<LicenseTypeDto>> GetAllAsync()
+        public async Task<List<LicenseTypeDto>> GetAllAsync()
         {
             var entities = await _uow.LicenseTypes.GetAllAsync();
 
-            if (entities == null || !entities.Any())
-                throw new NotFoundException("No license types found.");
-
-            return entities.Select(e => e.ToDto());
+            return entities.Select(e => e.ToDto()).ToList();
         }
 
         public async Task<LicenseTypeDto> GetByIdAsync(Guid id)
@@ -46,13 +43,13 @@ namespace DrivingLicense.Application.Services
             return entity.ToDto();
         }
 
-        public async Task UpdateAsync(Guid Id, LicenseTypeUpdateDto dto)
+        public async Task UpdateAsync(Guid id, LicenseTypeUpdateDto dto)
         {
-            var exists = await _uow.LicenseTypes.GetByIdAsync(Id);
+            var exists = await _uow.LicenseTypes.FindAsync(id);
             if (exists == null)
                 throw new NotFoundException("License type not found.");
 
-            var nameExists = await _uow.LicenseTypes.ExistsByNameAsync(excludeId: Id, name: dto.Name);
+            var nameExists = await _uow.LicenseTypes.ExistsByNameAsync(excludeId: id, name: dto.Name);
             if (nameExists)
                 throw new ConflictException("License type with the same name already exists.");
 
