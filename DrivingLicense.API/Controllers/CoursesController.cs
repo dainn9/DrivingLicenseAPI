@@ -25,7 +25,8 @@ namespace DrivingLicense.API.Controllers
         public async Task<IActionResult> Create([FromBody] CourseCreateDto dto)
         {
             var result = await _courseService.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { courseId = result.Id }, ApiResponse<CourseDto>.SuccessResponse(result));
+            return CreatedAtAction(nameof(GetById), new { courseId = result.Id },
+                ApiResponse<CourseDto>.SuccessResponse(result));
         }
 
         [HttpGet("{courseId:guid}")]
@@ -36,9 +37,9 @@ namespace DrivingLicense.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] PaginationParams paginationParams)
+        public async Task<IActionResult> GetPage([FromQuery] PaginationParams pageParams)
         {
-            var courses = await _courseService.GetAllAsync(paginationParams);
+            var courses = await _courseService.GetPageAsync(pageParams);
             return Ok(ApiResponse<PagedResult<CourseDto>>.SuccessResponse(courses));
 
         }

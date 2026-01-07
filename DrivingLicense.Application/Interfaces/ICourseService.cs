@@ -5,9 +5,9 @@ namespace DrivingLicense.Application.Interfaces
 {
     public interface ICourseService
     {
-        Task<PagedResult<CourseDto>> GetAllAsync(PaginationParams pageParams);
+        Task<PagedResult<CourseDto>> GetPageAsync(PaginationParams pageParams);
         Task<CourseDto> GetByIdAsync(Guid id);
         Task<CourseDto> CreateAsync(CourseCreateDto dto);
-        Task UpdateAsync(Guid Id, CourseUpdateDto dto);
+        Task UpdateAsync(Guid id, CourseUpdateDto dto);
     }
 }

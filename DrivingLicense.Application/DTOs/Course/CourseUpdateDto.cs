@@ -1,6 +1,6 @@
-using System.ComponentModel.DataAnnotations;
 using DrivingLicense.Application.Validators;
 using DrivingLicense.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace DrivingLicense.Application.DTOs.Course
 {
@@ -8,6 +8,7 @@ namespace DrivingLicense.Application.DTOs.Course
     {
         [Required]
         [MaxLength(100)]
+        [RegularExpression(@".*\S.*", ErrorMessage = "Field cannot be empty or whitespace.")]
         public string CourseName { get; set; } = string.Empty;
 
         [Required]

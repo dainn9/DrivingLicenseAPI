@@ -1,19 +1,15 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace DrivingLicense.Application.DTOs.LicenseType
 {
     public class LicenseTypeUpdateDto
     {
-        [Required]
         [MaxLength(50)]
+        [RegularExpression(@".*\S.*", ErrorMessage = "Field cannot be empty or whitespace.")]
         public string Name { get; set; } = string.Empty;
 
-        [Required]
         [MaxLength(250)]
+        [RegularExpression(@".*\S.*", ErrorMessage = "Field cannot be empty or whitespace.")]
         public string Description { get; set; } = string.Empty;
     }
 }

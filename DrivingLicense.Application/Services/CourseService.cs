@@ -34,11 +34,11 @@ namespace DrivingLicense.Application.Services
             return entity.ToDto();
         }
 
-        public async Task<PagedResult<CourseDto>> GetAllAsync(PaginationParams pageParams)
+        public async Task<PagedResult<CourseDto>> GetPageAsync(PaginationParams pageParams)
         {
             pageParams.Normalize();
 
-            var (entities, totalCount) = await _uow.Courses.GetAllAsync(pageParams.PageNumber, pageParams.PageSize);
+            var (entities, totalCount) = await _uow.Courses.GetPageAsync(pageParams.PageNumber, pageParams.PageSize);
             var dtos = entities.Select(e => e.ToDto());
 
             var pagedResult = new PagedResult<CourseDto>

@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using DrivingLicense.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -31,7 +27,7 @@ namespace DrivingLicense.Infrastructure.Data.Configurations
                    .IsUnique();
 
             builder.Property(s => s.PhoneNumber)
-                   .HasMaxLength(15);
+                   .HasMaxLength(10);
 
             builder.Property(s => s.Address)
                    .HasMaxLength(200);
