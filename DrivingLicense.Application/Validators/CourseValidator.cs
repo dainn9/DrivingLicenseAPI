@@ -7,23 +7,28 @@ namespace DrivingLicense.Application.Validators
     {
         public static ValidationResult? ValidateDates(object _, ValidationContext context)
         {
-            var instance = context.ObjectInstance;
+            DateTime startDate;
+            DateTime endDate;
 
-            switch (instance)
+            switch (context.ObjectInstance)
             {
                 case CourseCreateDto createDto:
-                    if (createDto.EndDate <= createDto.StartDate)
-                        return new ValidationResult("EndDate must be after StartDate.");
-                    if (createDto.EndDate <= DateTime.Today)
-                        return new ValidationResult("EndDate must be after today.");
+                    startDate = createDto.StartDate;
+                    endDate = createDto.EndDate;
                     break;
                 case CourseUpdateDto updateDto:
-                    if (updateDto.EndDate <= updateDto.StartDate)
-                        return new ValidationResult("EndDate must be after StartDate.");
-                    if (updateDto.EndDate <= DateTime.Today)
-                        return new ValidationResult("EndDate must be after today.");
+                    startDate = updateDto.StartDate;
+                    endDate = updateDto.EndDate;
                     break;
+                default:
+                    return ValidationResult.Success;
             }
+
+            if (startDate.Date < DateTime.Today)
+                return new ValidationResult("StartDate must be today or later.");
+
+            if (startDate >= endDate)
+                return new ValidationResult("EndDate must be after startdate.");
 
             return ValidationResult.Success;
         }
