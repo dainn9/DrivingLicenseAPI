@@ -4,6 +4,5 @@ namespace DrivingLicense.Domain.Enums
     {
         Female = 0,
         Male = 1,
-        Other = 2
     }
 }
