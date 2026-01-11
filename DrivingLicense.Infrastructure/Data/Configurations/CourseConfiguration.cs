@@ -36,8 +36,6 @@ namespace DrivingLicense.Infrastructure.Data.Configurations
 
             builder.ToTable(c => c.HasCheckConstraint("CK_Courses_Capacity_NonNegative", "[Capacity] >= 0"));
 
-            builder.ToTable(c => c.HasCheckConstraint("CK_Courses_ValiDates", "[StartDate] >= GETDATE() && [EndDate] > [StartDate]"));
-
             builder.HasOne(c => c.LicenseType)
                    .WithMany(lt => lt.Courses)
                    .HasForeignKey(c => c.LicenseTypeId)
