@@ -25,7 +25,7 @@ namespace DrivingLicense.API.Controllers
         public async Task<IActionResult> Create([FromBody] StudentCreateDto dto)
         {
             var result = await _studentService.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { stdudentId = result.Id },
+            return CreatedAtAction(nameof(GetById), new { studentId = result.Id },
                 ApiResponse<StudentDto>.SuccessResponse(result));
         }
 

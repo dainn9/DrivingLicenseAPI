@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace DrivingLicense.Application.DTOs.LicenseType
 {
     public class LicenseTypeDto
