@@ -13,7 +13,7 @@ namespace DrivingLicense.Application.Mappers
                 Id = entity.Id,
                 FullName = entity.FullName,
                 Gender = entity.Gender == Gender.Male ? "Nam" : "Nữ",
-                DateOfBirth = entity.DateOfBirth.ToString(),
+                DateOfBirth = entity.DateOfBirth,
                 PhoneNumber = entity.PhoneNumber,
                 Email = entity.Email,
                 Address = entity.Address,
