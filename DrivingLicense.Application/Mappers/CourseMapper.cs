@@ -1,5 +1,6 @@
 using DrivingLicense.Application.DTOs.Course;
 using DrivingLicense.Domain.Entities;
+using DrivingLicense.Domain.Extensions;
 
 namespace DrivingLicense.Application.Mappers
 {
@@ -15,7 +16,7 @@ namespace DrivingLicense.Application.Mappers
                 EndDate = entity.EndDate,
                 Capacity = entity.Capacity,
                 CurrentStudentCount = entity.RegisterFiles.Count,
-                Status = entity.Status,
+                Status = entity.Status.ToText(),
                 LicenseTypeId = entity.LicenseTypeId,
                 LicenseTypeName = entity.LicenseType?.LicenseTypeName ?? string.Empty,
             };

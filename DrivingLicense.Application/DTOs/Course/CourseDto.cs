@@ -1,5 +1,3 @@
-using DrivingLicense.Domain.Enums;
-
 namespace DrivingLicense.Application.DTOs.Course
 {
     public class CourseDto
@@ -10,7 +8,7 @@ namespace DrivingLicense.Application.DTOs.Course
         public DateTime EndDate { get; set; }
         public int Capacity { get; set; }
         public int CurrentStudentCount { get; set; }
-        public CourseStatus Status { get; set; }
+        public string Status { get; set; } = string.Empty;
 
         public Guid LicenseTypeId { get; set; }
         public string LicenseTypeName { get; set; } = string.Empty;
