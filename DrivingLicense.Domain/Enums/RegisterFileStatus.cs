@@ -4,6 +4,7 @@ namespace DrivingLicense.Domain.Enums
     {
         Created = 0,
         WaitingApproval = 1,
-        Approved = 2
+        Approved = 2,
+        Rejected = 3
     }
 }
