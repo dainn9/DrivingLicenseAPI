@@ -8,5 +8,6 @@ namespace DrivingLicense.Domain.Interfaces
         Task<bool> ExistsByPhoneNumberAsync(string phoneNumber, Guid? excludeId = null);
         Task<bool> ExistsByIdentityCardAsync(string identityCard, Guid? excludeId = null);
         Task<bool> ExistsByEmailAsync(string email, Guid? excludeId = null);
+        Task<bool> ExistsByIdAsync(Guid id);
     }
 }

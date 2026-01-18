@@ -8,6 +8,7 @@ namespace DrivingLicense.Application.Interfaces
         ILicenseTypeRepository LicenseTypes { get; }
         ICourseRepository Courses { get; }
         IStudentRepository Students { get; }
+        IRegisterFileRepository RegisterFile { get; }
         Task BeginTransactionAsync();
         Task CommitAsync();
         Task RollbackAsync();

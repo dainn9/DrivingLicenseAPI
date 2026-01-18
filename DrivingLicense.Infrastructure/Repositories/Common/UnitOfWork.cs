@@ -16,13 +16,16 @@ namespace DrivingLicense.Infrastructure.Repositories
 
         public IStudentRepository Students { get; }
 
+        public IRegisterFileRepository RegisterFile { get; }
+
         public UnitOfWork(DrivingDbContext context, ILicenseTypeRepository licenseTypeRepo,
-            ICourseRepository courseRepo, IStudentRepository studentRepo)
+            ICourseRepository courseRepo, IStudentRepository studentRepo, IRegisterFileRepository registerFile)
         {
             _context = context;
             LicenseTypes = licenseTypeRepo;
             Courses = courseRepo;
             Students = studentRepo;
+            RegisterFile = registerFile;
         }
 
         public async Task BeginTransactionAsync()

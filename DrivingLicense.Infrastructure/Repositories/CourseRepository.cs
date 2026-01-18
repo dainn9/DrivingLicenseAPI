@@ -33,5 +33,9 @@ namespace DrivingLicense.Infrastructure.Repositories
 
             return (items, totalItems);
         }
+
+        public async Task<bool> ExistsByIdAsync(Guid id)
+            => await _context.Courses.AsNoTracking().AnyAsync(c => c.Id == id);
+
     }
 }

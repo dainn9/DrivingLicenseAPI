@@ -26,8 +26,14 @@ builder.Services.AddEndpointsApiExplorer();
 
 #region DbContext
 builder.Services.AddDbContext<DrivingDbContext>(options =>
+{
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
+     .EnableSensitiveDataLogging()
+           .LogTo(
+               Console.WriteLine,
+               new[] { DbLoggerCategory.Database.Command.Name },
+               LogLevel.Information);
+});
 #endregion
 
 #region Swagger
@@ -76,6 +82,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<ILicenseTypeRepository, LicenseTypeRepository>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+builder.Services.AddScoped<IRegisterFileRepository, RegisterFileRepository>();
 #endregion
 
 #region Services
@@ -84,6 +91,7 @@ builder.Services.AddScoped<ITokenService, JwtTokenService>();
 builder.Services.AddScoped<ILicenseTypeService, LicenseTypeService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IRegisterFileService, RegisterFileService>();
 #endregion
 
 #region Indentity
