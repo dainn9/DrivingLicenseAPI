@@ -1,8 +1,6 @@
-using DrivingLicense.Domain.Entities.Common;
-
 namespace DrivingLicense.Domain.Entities
 {
-    public class TeacherLicenseType : BaseEntity
+    public class TeacherLicenseType
     {
         public Guid TeacherId { get; set; }
         public Guid LicenseTypeId { get; set; }
