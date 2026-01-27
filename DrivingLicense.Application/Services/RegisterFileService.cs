@@ -147,6 +147,15 @@ namespace DrivingLicense.Application.Services
             if (entity == null)
                 throw new NotFoundException("Register file not found.");
 
+            if (dto.Status == RegisterFileStatus.InProgress)
+            {
+                if (entity.CourseId == null)
+                    throw new ConflictException("Register file has not been assigned to a course.");
+
+                if (entity.Course!.StartDate > DateTime.UtcNow)
+                    throw new ConflictException("Course has not started yet.");
+            }
+
             if (entity.Status == dto.Status)
                 return;
 
