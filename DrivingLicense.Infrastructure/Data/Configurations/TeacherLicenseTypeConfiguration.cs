@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using DrivingLicense.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -14,9 +10,7 @@ namespace DrivingLicense.Infrastructure.Data.Configurations
         {
             builder.ToTable("TeacherLicenseTypes");
 
-            builder.HasKey(tlt => tlt.Id);
-
-            builder.HasIndex(tlt => new { tlt.TeacherId, tlt.LicenseTypeId }).IsUnique();
+            builder.HasKey(tlt => new { tlt.TeacherId, tlt.LicenseTypeId });
 
             builder.HasOne(tlt => tlt.Teacher)
                    .WithMany(t => t.TeacherLicenseTypes)
