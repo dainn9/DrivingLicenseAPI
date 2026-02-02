@@ -37,9 +37,9 @@ namespace DrivingLicense.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetPage([FromQuery] PaginationParams pageParams)
+        public async Task<IActionResult> GetPage([FromQuery] PaginationParams pageParams, [FromQuery] string? searchTerm = null)
         {
-            var students = await _studentService.GetPageAsync(pageParams);
+            var students = await _studentService.GetPageAsync(pageParams, searchTerm);
             return Ok(ApiResponse<PagedResult<StudentDto>>.SuccessResponse(students));
         }
 

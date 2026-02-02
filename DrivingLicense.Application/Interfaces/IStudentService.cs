@@ -5,7 +5,7 @@ namespace DrivingLicense.Application.Interfaces
 {
     public interface IStudentService
     {
-        Task<PagedResult<StudentDto>> GetPageAsync(PaginationParams pageParams);
+        Task<PagedResult<StudentDto>> GetPageAsync(PaginationParams pageParams, string? searchTerm = null);
         Task<StudentDto> GetByIdAsync(Guid id);
         Task<StudentDto> CreateAsync(StudentCreateDto dto);
         Task UpdateAsync(Guid id, StudentUpdateDto dto);

@@ -45,12 +45,23 @@ namespace DrivingLicense.Application.Services
             return entity.ToDto();
         }
 
-        public async Task<PagedResult<StudentDto>> GetPageAsync(PaginationParams pageParams)
+        public async Task<PagedResult<StudentDto>> GetPageAsync(PaginationParams pageParams, string? searchTerm = null)
         {
             pageParams.Normalize();
 
-            var (entities, totalCount) = await _uow.Students.GetPageAsync(pageParams.PageNumber, pageParams.PageSize);
-            var dtos = entities.Select(e => e.ToDto());
+            var (entities, totalCount) = await _uow.Students.GetPageAsync(pageParams.PageNumber, pageParams.PageSize, searchTerm);
+
+            if (totalCount > 0)
+            {
+                var totalPages = (int)Math.Ceiling(
+                    totalCount / (double)pageParams.PageSize);
+
+                if (pageParams.PageNumber > totalPages)
+                    throw new BadRequestException(
+                        $"Page number {pageParams.PageNumber} exceeds total pages {totalPages}.");
+            }
+
+            var dtos = entities.Select(e => e.ToDto()).ToList();
 
             var pagedResult = new PagedResult<StudentDto>
             {
@@ -59,9 +70,6 @@ namespace DrivingLicense.Application.Services
                 PageNumber = pageParams.PageNumber,
                 PageSize = pageParams.PageSize
             };
-
-            if (totalCount > 0 && pagedResult.PageNumber > pagedResult.TotalPages)
-                throw new BadRequestException($"Page number {pageParams.PageNumber} exceeds total pages {pagedResult.TotalPages}.");
 
             return pagedResult;
         }

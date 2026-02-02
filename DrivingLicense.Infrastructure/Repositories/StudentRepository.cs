@@ -21,9 +21,15 @@ namespace DrivingLicense.Infrastructure.Repositories
         public async Task<bool> ExistsByEmailAsync(string email, Guid? excludeId)
             => await _context.Students.AsNoTracking().AnyAsync(s => s.Email == email && (excludeId == null || s.Id != excludeId));
 
-        public async Task<(List<Student>, int)> GetPageAsync(int pageNumber, int pageSize)
+        public async Task<(List<Student>, int)> GetPageAsync(int pageNumber, int pageSize, string? searchTerm = null)
         {
-            var query = _context.Students.AsNoTracking().OrderBy(s => s.Id);
+            var query = _context.Students.AsNoTracking();
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+                query = query.Where(s => s.PhoneNumber.StartsWith(searchTerm) ||
+                                         s.IdentityCard.StartsWith(searchTerm));
+
+            query = query.OrderBy(s => s.FullName);
 
             var totalItems = await query.CountAsync();
 
