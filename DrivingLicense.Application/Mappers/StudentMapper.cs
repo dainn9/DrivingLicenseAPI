@@ -1,6 +1,5 @@
 using DrivingLicense.Application.DTOs.Student;
 using DrivingLicense.Domain.Entities;
-using DrivingLicense.Domain.Enums;
 
 namespace DrivingLicense.Application.Mappers
 {
@@ -12,7 +11,7 @@ namespace DrivingLicense.Application.Mappers
             {
                 Id = entity.Id,
                 FullName = entity.FullName,
-                Gender = entity.Gender == Gender.Male ? "Nam" : "Nữ",
+                Gender = entity.Gender,
                 DateOfBirth = entity.DateOfBirth,
                 PhoneNumber = entity.PhoneNumber,
                 Email = entity.Email,

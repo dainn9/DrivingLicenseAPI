@@ -27,7 +27,7 @@ namespace DrivingLicense.Application.Mappers
             {
                 Id = entity.Id,
                 FullName = entity.Student!.FullName,
-                Gender = entity.Student.Gender.ToString(),
+                Gender = entity.Student.Gender,
                 DateOfBirth = entity.Student.DateOfBirth,
                 PhoneNumber = entity.Student.PhoneNumber,
                 Email = entity.Student.Email ?? string.Empty,
