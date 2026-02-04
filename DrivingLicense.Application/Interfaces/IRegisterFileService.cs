@@ -5,7 +5,7 @@ namespace DrivingLicense.Application.Interfaces
 {
     public interface IRegisterFileService
     {
-        Task<PagedResult<RegisterFileDto>> GetPageAsync(PaginationParams pageParams);
+        Task<PagedResult<RegisterFileDto>> GetPageAsync(PaginationParams pageParams, string? searchTerm = null);
         Task<RegisterFileDto> GetByIdAsync(Guid id);
         Task<RegisterFileDetailDto> GetDetailByIdAsync(Guid id);
         Task<RegisterFileDto> CreateAsync(RegisterFileCreateDto dto);

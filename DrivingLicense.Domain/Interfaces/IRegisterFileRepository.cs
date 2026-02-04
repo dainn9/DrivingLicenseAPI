@@ -4,7 +4,7 @@ namespace DrivingLicense.Domain.Interfaces
 {
     public interface IRegisterFileRepository : IGenericRepository<RegisterFile>
     {
-        Task<(List<RegisterFile>, int)> GetPageAsync(int pageNumber, int pageSize);
+        Task<(List<RegisterFile>, int)> GetPageAsync(int pageNumber, int pageSize, string? searchTerm = null);
         Task<int> CountByCourseIdAsync(Guid courseId, Guid? excludeId = null);
         Task<RegisterFile?> GetDetailByIdAsync(Guid id);
     }
