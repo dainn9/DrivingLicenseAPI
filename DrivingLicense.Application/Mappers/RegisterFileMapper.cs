@@ -17,6 +17,7 @@ namespace DrivingLicense.Application.Mappers
                 LicenseTypeName = entity.LicenseType?.LicenseTypeName ?? string.Empty,
                 CourseName = entity.Course?.CourseName ?? string.Empty,
                 IdentityCard = entity.Student?.IdentityCard ?? string.Empty,
+                StatusCode = entity.Status.ToCode(),
                 StatusName = entity.Status.ToText(),
             };
         }
@@ -36,6 +37,7 @@ namespace DrivingLicense.Application.Mappers
                 IdentityCard = entity.Student.IdentityCard,
                 LicenseTypeName = entity.LicenseType?.LicenseTypeName ?? string.Empty,
                 CourseName = entity.Course?.CourseName ?? string.Empty,
+                StatusCode = entity.Status.ToCode(),
                 StatusName = entity.Status.ToText(),
                 SubmissionDate = entity.SubmissionDate,
             };

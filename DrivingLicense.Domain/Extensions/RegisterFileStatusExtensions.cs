@@ -17,5 +17,8 @@ namespace DrivingLicense.Domain.Extensions
                 _ => "Không xác định"
             };
         }
+
+        public static string ToCode(this RegisterFileStatus registerFileStatus)
+            => registerFileStatus.ToString();
     }
 }
