@@ -3,7 +3,8 @@ namespace DrivingLicense.Domain.Enums
     public enum CourseStatus
     {
         Open = 0,       // Đang mở
-        Completed = 1, // Hoàn thành
-        Closed = 2     // Kết thúc
+        Ongoing = 1,    // Đang diễn ra
+        Completed = 2, // Hoàn thành
+        Closed = 3     // Kết thúc
     }
 }
