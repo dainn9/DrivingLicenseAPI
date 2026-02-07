@@ -8,8 +8,8 @@ namespace DrivingLicense.Application.DTOs.Course
         public DateTime EndDate { get; set; }
         public int Capacity { get; set; }
         public int CurrentStudentCount { get; set; }
-        public string Status { get; set; } = string.Empty;
-
+        public string StatusCode { get; set; } = string.Empty;
+        public string StatusName { get; set; } = string.Empty;
         public Guid LicenseTypeId { get; set; }
         public string LicenseTypeName { get; set; } = string.Empty;
     }

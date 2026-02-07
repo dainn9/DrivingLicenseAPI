@@ -9,10 +9,14 @@ namespace DrivingLicense.Domain.Extensions
             return courseStatus switch
             {
                 CourseStatus.Open => "Đang mở",
+                CourseStatus.Ongoing => "Đang diễn ra",
                 CourseStatus.Completed => "Hoàn thành",
                 CourseStatus.Closed => "Đóng",
                 _ => "Không xác định"
             };
         }
+
+        public static string ToCode(this CourseStatus courseStatus)
+       => courseStatus.ToString();
     }
 }
