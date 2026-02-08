@@ -1,5 +1,6 @@
 using DrivingLicense.Application.DTOs.Course;
 using DrivingLicense.Domain.Entities;
+using DrivingLicense.Domain.Enums;
 using DrivingLicense.Domain.Extensions;
 
 namespace DrivingLicense.Application.Mappers
@@ -31,7 +32,7 @@ namespace DrivingLicense.Application.Mappers
                 StartDate = dto.StartDate,
                 EndDate = dto.EndDate,
                 Capacity = dto.Capacity,
-                Status = dto.Status,
+                Status = CourseStatus.Open,
                 LicenseTypeId = dto.LicenseTypeId
             };
         }
