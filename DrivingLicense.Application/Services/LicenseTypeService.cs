@@ -1,4 +1,5 @@
 using DrivingLicense.Application.Common.Exceptions;
+using DrivingLicense.Application.DTOs.Common;
 using DrivingLicense.Application.DTOs.LicenseType;
 using DrivingLicense.Application.Interfaces;
 using DrivingLicense.Application.Mappers;
@@ -43,10 +44,14 @@ namespace DrivingLicense.Application.Services
             return entity.ToDto();
         }
 
-        public async Task<List<LicenseTypeDropDownDto>> GetDropDownListAsync()
+        public async Task<List<LookupDto>> GetDropDownListAsync()
         {
             var entities = await _uow.LicenseTypes.GetDropDownListAsync();
-            return entities.Select(e => e.ToDropDownDto()).ToList();
+            return entities.Select(e => new LookupDto
+            {
+                Id = e.Id,
+                Name = e.LicenseTypeName,
+            }).ToList();
         }
 
         public async Task UpdateAsync(Guid id, LicenseTypeUpdateDto dto)

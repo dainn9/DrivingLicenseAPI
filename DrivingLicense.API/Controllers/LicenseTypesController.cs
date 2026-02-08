@@ -1,4 +1,5 @@
 using DrivingLicense.Application.Common.ApiResponses;
+using DrivingLicense.Application.DTOs.Common;
 using DrivingLicense.Application.DTOs.LicenseType;
 using DrivingLicense.Application.Interfaces;
 using DrivingLicense.Infrastructure.Authentication;
@@ -46,7 +47,7 @@ namespace DrivingLicense.API.Controllers
         public async Task<IActionResult> GetDropDownList()
         {
             var licenseTypes = await _licenseTypeService.GetDropDownListAsync();
-            return Ok(ApiResponse<IEnumerable<LicenseTypeDropDownDto>>.SuccessResponse(licenseTypes));
+            return Ok(ApiResponse<IEnumerable<LookupDto>>.SuccessResponse(licenseTypes));
 
         }
 

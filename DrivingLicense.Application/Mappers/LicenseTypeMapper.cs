@@ -29,14 +29,5 @@ namespace DrivingLicense.Application.Mappers
             entity.LicenseTypeName = dto.Name;
             entity.LicenseTypeDescription = dto.Description;
         }
-
-        public static LicenseTypeDropDownDto ToDropDownDto(this LicenseType entity)
-        {
-            return new LicenseTypeDropDownDto
-            {
-                Id = entity.Id,
-                LicenseTypeName = entity.LicenseTypeName,
-            };
-        }
     }
 }
