@@ -1,5 +1,4 @@
 using DrivingLicense.Application.Validators;
-using DrivingLicense.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace DrivingLicense.Application.DTOs.Course
@@ -21,9 +20,6 @@ namespace DrivingLicense.Application.DTOs.Course
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "Quantity must be at least 1.")]
         public int Capacity { get; set; }
-
-        [Required]
-        public CourseStatus Status { get; set; }
 
         [Required]
         public Guid LicenseTypeId { get; set; }
