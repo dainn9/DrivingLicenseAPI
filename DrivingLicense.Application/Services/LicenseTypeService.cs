@@ -43,6 +43,12 @@ namespace DrivingLicense.Application.Services
             return entity.ToDto();
         }
 
+        public async Task<List<LicenseTypeDropDownDto>> GetDropDownListAsync()
+        {
+            var entities = await _uow.LicenseTypes.GetDropDownListAsync();
+            return entities.Select(e => e.ToDropDownDto()).ToList();
+        }
+
         public async Task UpdateAsync(Guid id, LicenseTypeUpdateDto dto)
         {
             var exists = await _uow.LicenseTypes.FindAsync(id);

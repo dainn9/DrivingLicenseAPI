@@ -8,6 +8,7 @@ namespace DrivingLicense.Application.Interfaces
         Task<LicenseTypeDto> GetByIdAsync(Guid id);
         Task<LicenseTypeDto> CreateAsync(LicenseTypeCreateDto dto);
         Task UpdateAsync(Guid id, LicenseTypeUpdateDto dto);
+        Task<List<LicenseTypeDropDownDto>> GetDropDownListAsync();
         // Task DeleteAsync(Guid id);
     }
 }

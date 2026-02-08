@@ -20,5 +20,8 @@ namespace DrivingLicense.Infrastructure.Repositories
 
         public async Task<bool> ExistsByIdAsync(Guid id)
             => await _context.LicenseTypes.AsNoTracking().AnyAsync(lt => lt.Id == id);
+
+        public async Task<List<LicenseType>> GetDropDownListAsync()
+            => await _context.LicenseTypes.AsNoTracking().ToListAsync();
     }
 }

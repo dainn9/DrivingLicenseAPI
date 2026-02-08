@@ -6,5 +6,6 @@ namespace DrivingLicense.Domain.Interfaces
     {
         Task<bool> ExistsByNameAsync(string name, Guid? excludeId = null);
         Task<bool> ExistsByIdAsync(Guid id);
+        Task<List<LicenseType>> GetDropDownListAsync();
     }
 }
