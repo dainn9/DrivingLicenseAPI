@@ -43,14 +43,6 @@ namespace DrivingLicense.API.Controllers
 
         }
 
-        [HttpGet("dropdown")]
-        public async Task<IActionResult> GetDropDownList()
-        {
-            var licenseTypes = await _licenseTypeService.GetDropDownListAsync();
-            return Ok(ApiResponse<IEnumerable<LookupDto>>.SuccessResponse(licenseTypes));
-
-        }
-
         [Authorize(Roles = AppRoles.Administrator)]
         [HttpPut("{licenseTypeId:guid}")]
         public async Task<IActionResult> Update(Guid licenseTypeId, [FromBody] LicenseTypeUpdateDto dto)
