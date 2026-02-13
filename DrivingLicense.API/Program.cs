@@ -1,4 +1,3 @@
-
 using DrivingLicense.API.Middlewares;
 using DrivingLicense.Application.Common.ApiResponses;
 using DrivingLicense.Application.Interfaces;
@@ -19,8 +18,22 @@ using System.Text.Json;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+#region ModelState Validation Response
+builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
+{
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        var errors = context.ModelState
+            .Where(e => e.Value != null && e.Value?.Errors.Count > 0)
+            .SelectMany(e => e.Value!.Errors)
+            .Select(e => e.ErrorMessage)
+            .ToList();
 
-builder.Services.AddControllers();
+        var response = ApiResponse<object>.FailureResponse(errors);
+        return new BadRequestObjectResult(response);
+    };
+});
+#endregion
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
@@ -71,7 +84,8 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
     {
-        builder.AllowAnyOrigin()
+        builder.WithOrigins("http://localhost:5173")
+               .AllowAnyOrigin()
                .AllowAnyHeader()
                .AllowAnyMethod();
     });
@@ -87,6 +101,7 @@ builder.Services.AddScoped<IRegisterFileRepository, RegisterFileRepository>();
 
 #region Services
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
 builder.Services.AddScoped<ILicenseTypeService, LicenseTypeService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
@@ -130,10 +145,9 @@ builder.Services.AddAuthentication(options =>
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
-    var secret = builder.Configuration["JwtConfig:Secret"];
-    var issuer = builder.Configuration["JwtConfig:ValidIssuer"];
-    var audience = builder.Configuration["JwtConfig:ValidAudiences"];
-    if (secret is null || issuer is null || audience is null)
+    var jwtConfig = builder.Configuration.GetSection("JwtConfig").Get<JwtConfig>();
+
+    if (jwtConfig == null)
     {
         throw new ApplicationException("Jwt is not set in the configuration");
     }
@@ -143,9 +157,12 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidAudience = audience,
-        ValidIssuer = issuer,
-        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secret))
+        ValidateIssuerSigningKey = true,
+        ValidateLifetime = true,
+
+        ValidAudience = jwtConfig.ValidAudience,
+        ValidIssuer = jwtConfig.ValidIssuer,
+        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwtConfig.Secret))
     };
 
     options.Events = new JwtBearerEvents
@@ -183,25 +200,12 @@ builder.Services.AddAuthentication(options =>
 });
 #endregion
 
-
-#region ModelState Validation Response
-builder.Services.AddControllers()
-    .ConfigureApiBehaviorOptions(options =>
-    {
-        options.InvalidModelStateResponseFactory = context =>
-        {
-            var errors = context.ModelState
-                .Where(e => e.Value != null && e.Value?.Errors.Count > 0)
-                .SelectMany(e => e.Value!.Errors)
-                .Select(e => e.ErrorMessage)
-                .ToList();
-
-            var response = ApiResponse<object>.FailureResponse(errors);
-            return new BadRequestObjectResult(response);
-        };
-    });
-
+#region JwtConfig
+builder.Services.Configure<JwtConfig>(
+    builder.Configuration.GetSection("JwtConfig"));
 #endregion
+
+
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
@@ -220,14 +224,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseCors("AllowAll");
 
+app.UseHttpsRedirection();
 
 app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.UseCors("AllowAll");
 
 app.MapControllers();
 
