@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DrivingLicense.Infrastructure.Authentication;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using DrivingLicense.Domain.Entities;
+using DrivingLicense.Infrastructure.Authentication;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace DrivingLicense.Infrastructure.Data
@@ -27,6 +23,7 @@ namespace DrivingLicense.Infrastructure.Data
         public DbSet<Teacher> Teachers => Set<Teacher>();
         public DbSet<TeacherLicenseType> TeacherLicenseTypes => Set<TeacherLicenseType>();
         public DbSet<TeachingSchedule> TeachingSchedules => Set<TeachingSchedule>();
+        public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
         // Other DbSet properties for your entities go here
 

@@ -1,21 +1,29 @@
 ﻿using DrivingLicense.Application.Common.Exceptions;
-using DrivingLicense.Application.DTOs.Auth;
+using DrivingLicense.Application.DTOs.Auth.request;
+using DrivingLicense.Application.DTOs.Auth.response;
+using DrivingLicense.Application.DTOs.User;
 using DrivingLicense.Application.Interfaces;
+using DrivingLicense.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 
 namespace DrivingLicense.Infrastructure.Authentication
 {
     public class AuthService : IAuthService
     {
+        private readonly DrivingDbContext _context;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenService _tokenService;
+        private readonly JwtConfig _jwtConfig;
 
-        public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenService tokenService)
+        public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenService tokenService, DrivingDbContext context, IOptions<JwtConfig> jwtOptions)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenService = tokenService;
+            _context = context;
+            _jwtConfig = jwtOptions.Value;
         }
 
         public async Task<LoginResponseDto> LoginAsync(LoginRequestDto request)
@@ -30,12 +38,41 @@ namespace DrivingLicense.Infrastructure.Authentication
 
             var userRoles = await _userManager.GetRolesAsync(user);
             var token = _tokenService.GenerateToken(user.Id, user.UserName!, userRoles);
+            var refreshToken = _tokenService.GenerateRefreshToken();
+            var hashedRefreshToken = _tokenService.HashToken(refreshToken);
+
+            var refreshTokenEnity = new RefreshToken
+            {
+                Token = hashedRefreshToken,
+                UserId = user.Id,
+                CreatedAt = DateTime.UtcNow,
+                ExpiresAt = DateTime.UtcNow.AddDays(7),
+                IsRevoked = false
+            };
+
+            var expiresIn = _jwtConfig.AccessTokenExpirationMinutes * 60;
 
             var dto = new LoginResponseDto
             {
                 AccessToken = token,
+                RefreshToken = refreshToken,
+                ExpiresIn = expiresIn,
+                User = new UserDto
+                {
+                    Id = user.Id,
+                    Role = userRoles.ToList()
+
+                }
             };
+
+            _context.RefreshTokens.Add(refreshTokenEnity);
+            await _context.SaveChangesAsync();
             return dto;
+        }
+
+        public Task<RefreshTokenResponseDto> RefreshTokenAsync(RefreshTokenRequestDto request)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<RegisterResponseDto> RegisterAsync(RegisterRequestDto request)

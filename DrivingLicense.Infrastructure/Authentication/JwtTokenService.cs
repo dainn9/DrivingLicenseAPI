@@ -1,38 +1,35 @@
 ﻿using DrivingLicense.Application.Interfaces;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DrivingLicense.Infrastructure.Authentication
 {
     public class JwtTokenService : ITokenService
     {
-        private readonly IConfiguration _config;
+        private readonly JwtConfig _jwtConfig;
 
-        public JwtTokenService(IConfiguration configuration)
+        public JwtTokenService(IOptions<JwtConfig> jwtOptions)
         {
-            _config = configuration;
+            _jwtConfig = jwtOptions.Value;
+        }
+
+        public string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[64];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+                return Convert.ToBase64String(randomNumber);
+            }
         }
 
         public string GenerateToken(string userId, string userName, IList<string> roles)
         {
-            var secret = _config["JwtConfig:Secret"];
-            var issuer = _config["JwtConfig:ValidIssuer"];
-            var audience = _config["JwtConfig:ValidAudiences"];
-
-            if (secret is null || issuer is null || audience is null)
-            {
-                throw new InvalidOperationException("Jwt is not set in the configuration");
-            }
-
-            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
+            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfig.Secret));
 
             var claims = new List<Claim>
             {
@@ -48,9 +45,9 @@ namespace DrivingLicense.Infrastructure.Authentication
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddDays(1),
-                Issuer = issuer,
-                Audience = audience,
+                Expires = DateTime.UtcNow.AddMinutes(_jwtConfig.AccessTokenExpirationMinutes),
+                Issuer = _jwtConfig.ValidIssuer,
+                Audience = _jwtConfig.ValidAudience,
                 SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256Signature)
             };
 
@@ -60,9 +57,11 @@ namespace DrivingLicense.Infrastructure.Authentication
             return tokenHandler.WriteToken(securityToken);
         }
 
-        //public Task<bool> ValidateTokenAsync(string token)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public string HashToken(string token)
+        {
+            using var sha256 = SHA256.Create();
+            var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(token));
+            return Convert.ToBase64String(hashedBytes);
+        }
     }
 }
