@@ -5,8 +5,8 @@ namespace DrivingLicense.Application.Interfaces
 {
     public interface IAuthService
     {
-        Task<LoginResponseDto> LoginAsync(LoginRequestDto request);
+        Task<(LoginResponseDto dto, string refreshToken)> LoginAsync(LoginRequestDto request);
         Task<RegisterResponseDto> RegisterAsync(RegisterRequestDto request);
-        Task<RefreshTokenResponseDto> RefreshTokenAsync(RefreshTokenRequestDto request);
+        Task<(RefreshTokenResponseDto dto, string refreshToken)> RefreshTokenAsync(string refreshToken);
     }
 }

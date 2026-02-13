@@ -5,6 +5,7 @@ using DrivingLicense.Application.DTOs.User;
 using DrivingLicense.Application.Interfaces;
 using DrivingLicense.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace DrivingLicense.Infrastructure.Authentication
@@ -26,7 +27,7 @@ namespace DrivingLicense.Infrastructure.Authentication
             _jwtConfig = jwtOptions.Value;
         }
 
-        public async Task<LoginResponseDto> LoginAsync(LoginRequestDto request)
+        public async Task<(LoginResponseDto dto, string refreshToken)> LoginAsync(LoginRequestDto request)
         {
             var user = await _userManager.FindByNameAsync(request.Username);
             if (user == null)
@@ -55,7 +56,6 @@ namespace DrivingLicense.Infrastructure.Authentication
             var dto = new LoginResponseDto
             {
                 AccessToken = token,
-                RefreshToken = refreshToken,
                 ExpiresIn = expiresIn,
                 User = new UserDto
                 {
@@ -67,12 +67,52 @@ namespace DrivingLicense.Infrastructure.Authentication
 
             _context.RefreshTokens.Add(refreshTokenEnity);
             await _context.SaveChangesAsync();
-            return dto;
+            return (dto, refreshToken);
         }
 
-        public Task<RefreshTokenResponseDto> RefreshTokenAsync(RefreshTokenRequestDto request)
+        public async Task<(RefreshTokenResponseDto dto, string refreshToken)> RefreshTokenAsync(string refreshToken)
         {
-            throw new NotImplementedException();
+            var hasedToken = _tokenService.HashToken(refreshToken);
+            var storedRefreshToken = await _context.RefreshTokens.Include(rf => rf.User).FirstOrDefaultAsync(rf => rf.Token == hasedToken);
+
+            if (storedRefreshToken == null
+                 || storedRefreshToken.IsRevoked
+                 || storedRefreshToken.ExpiresAt < DateTime.UtcNow)
+            {
+                throw new UnauthorizedException("Invalid refresh token.");
+            }
+
+            var user = storedRefreshToken.User;
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var newToken = _tokenService.GenerateToken(user.Id, user.UserName!, userRoles);
+
+            storedRefreshToken.IsRevoked = true;
+            storedRefreshToken.RevokedAt = DateTime.UtcNow;
+
+            var newRefreshToken = _tokenService.GenerateRefreshToken();
+            var hashedNewRefreshToken = _tokenService.HashToken(newRefreshToken);
+
+            var newRefreshTokenEnity = new RefreshToken
+            {
+                Token = hashedNewRefreshToken,
+                UserId = user.Id,
+                CreatedAt = DateTime.UtcNow,
+                ExpiresAt = DateTime.UtcNow.AddDays(7),
+                IsRevoked = false
+            };
+
+            _context.RefreshTokens.Add(newRefreshTokenEnity);
+            await _context.SaveChangesAsync();
+
+            var expiresIn = _jwtConfig.AccessTokenExpirationMinutes * 60;
+
+            var dto = new RefreshTokenResponseDto
+            {
+                AccessToken = newToken,
+                ExpiresIn = expiresIn,
+            };
+
+            return (dto, newRefreshToken);
         }
 
         public async Task<RegisterResponseDto> RegisterAsync(RegisterRequestDto request)

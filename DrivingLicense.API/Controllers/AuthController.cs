@@ -2,8 +2,6 @@
 using DrivingLicense.Application.DTOs.Auth.request;
 using DrivingLicense.Application.DTOs.Auth.response;
 using DrivingLicense.Application.Interfaces;
-using DrivingLicense.Infrastructure.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DrivingLicense.API.Controllers
@@ -21,16 +19,44 @@ namespace DrivingLicense.API.Controllers
         public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
         {
 
-            var result = await _authService.LoginAsync(request);
-            return Ok(ApiResponse<LoginResponseDto>.SuccessResponse(result));
+            var (loginDto, refreshToken) = await _authService.LoginAsync(request);
+            Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = DateTimeOffset.UtcNow.AddDays(7)
+            });
+            return Ok(ApiResponse<LoginResponseDto>.SuccessResponse(loginDto));
         }
 
-        [Authorize(Roles = AppRoles.Administrator)]
+        //[Authorize(Roles = AppRoles.Administrator)]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDto request)
         {
             var result = await _authService.RegisterAsync(request);
             return Ok(ApiResponse<RegisterResponseDto>.SuccessResponse(result));
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+
+            if (string.IsNullOrEmpty(refreshToken))
+                return Unauthorized();
+
+            var (refreshDto, newRefreshToken) = await _authService.RefreshTokenAsync(refreshToken);
+
+            Response.Cookies.Append("refreshToken", newRefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = DateTimeOffset.UtcNow.AddDays(7)
+            });
+
+            return Ok(ApiResponse<RefreshTokenResponseDto>.SuccessResponse(refreshDto));
         }
     }
 }
