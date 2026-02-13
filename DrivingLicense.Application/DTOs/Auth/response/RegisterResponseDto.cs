@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace DrivingLicense.Application.DTOs.Auth
+namespace DrivingLicense.Application.DTOs.Auth.response
 {
     public class RegisterResponseDto
     {

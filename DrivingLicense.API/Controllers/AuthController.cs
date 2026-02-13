@@ -1,5 +1,6 @@
 ﻿using DrivingLicense.Application.Common.ApiResponses;
-using DrivingLicense.Application.DTOs.Auth;
+using DrivingLicense.Application.DTOs.Auth.request;
+using DrivingLicense.Application.DTOs.Auth.response;
 using DrivingLicense.Application.Interfaces;
 using DrivingLicense.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Authorization;
