@@ -107,6 +107,8 @@ builder.Services.AddScoped<ILicenseTypeService, LicenseTypeService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IRegisterFileService, RegisterFileService>();
+builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+builder.Services.AddHttpContextAccessor();
 #endregion
 
 #region Indentity
@@ -231,7 +233,6 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 
 app.UseAuthorization();
-
 
 app.MapControllers();
 
