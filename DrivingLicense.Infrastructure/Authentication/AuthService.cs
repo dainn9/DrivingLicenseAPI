@@ -3,28 +3,29 @@ using DrivingLicense.Application.DTOs.Auth.request;
 using DrivingLicense.Application.DTOs.Auth.response;
 using DrivingLicense.Application.DTOs.User;
 using DrivingLicense.Application.Interfaces;
-using DrivingLicense.Infrastructure.Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace DrivingLicense.Infrastructure.Authentication
 {
     public class AuthService : IAuthService
     {
-        private readonly DrivingDbContext _context;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenService _tokenService;
         private readonly JwtConfig _jwtConfig;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IRefreshTokenService _refreshTokenService;
 
-        public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenService tokenService, DrivingDbContext context, IOptions<JwtConfig> jwtOptions)
+        public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenService tokenService, IOptions<JwtConfig> jwtOptions, IHttpContextAccessor httpContextAccessor, IRefreshTokenService refreshTokenService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenService = tokenService;
-            _context = context;
             _jwtConfig = jwtOptions.Value;
+            _httpContextAccessor = httpContextAccessor;
+            _refreshTokenService = refreshTokenService;
         }
 
         public async Task<(LoginResponseDto dto, string refreshToken)> LoginAsync(LoginRequestDto request)
@@ -39,17 +40,8 @@ namespace DrivingLicense.Infrastructure.Authentication
 
             var userRoles = await _userManager.GetRolesAsync(user);
             var token = _tokenService.GenerateToken(user.Id, user.UserName!, userRoles);
-            var refreshToken = _tokenService.GenerateRefreshToken();
-            var hashedRefreshToken = _tokenService.HashToken(refreshToken);
 
-            var refreshTokenEnity = new RefreshToken
-            {
-                Token = hashedRefreshToken,
-                UserId = user.Id,
-                CreatedAt = DateTime.UtcNow,
-                ExpiresAt = DateTime.UtcNow.AddDays(7),
-                IsRevoked = false
-            };
+            var refreshToken = await _refreshTokenService.CreateRefreshTokenAsync(user.Id);
 
             var expiresIn = _jwtConfig.AccessTokenExpirationMinutes * 60;
 
@@ -65,50 +57,37 @@ namespace DrivingLicense.Infrastructure.Authentication
                 }
             };
 
-            _context.RefreshTokens.Add(refreshTokenEnity);
-            await _context.SaveChangesAsync();
             return (dto, refreshToken);
+        }
+
+        public async Task LogoutAsync()
+        {
+            var refreshToken = _httpContextAccessor.HttpContext?.Request.Cookies["refreshToken"];
+
+            if (string.IsNullOrWhiteSpace(refreshToken))
+                return;
+
+            await _refreshTokenService.ValidateAndRevokeAsync(refreshToken);
         }
 
         public async Task<(RefreshTokenResponseDto dto, string refreshToken)> RefreshTokenAsync(string refreshToken)
         {
-            var hasedToken = _tokenService.HashToken(refreshToken);
-            var storedRefreshToken = await _context.RefreshTokens.Include(rf => rf.User).FirstOrDefaultAsync(rf => rf.Token == hasedToken);
+            var (userId, newRefreshToken) = await _refreshTokenService.RotateRefreshTokenAsync(refreshToken);
 
-            if (storedRefreshToken == null
-                 || storedRefreshToken.IsRevoked
-                 || storedRefreshToken.ExpiresAt < DateTime.UtcNow)
-            {
-                throw new UnauthorizedException("Invalid refresh token.");
-            }
+            var user = await _userManager.FindByIdAsync(userId);
 
-            var user = storedRefreshToken.User;
+            if (user == null)
+                throw new NotFoundException("User not exists");
+
             var userRoles = await _userManager.GetRolesAsync(user);
-            var newToken = _tokenService.GenerateToken(user.Id, user.UserName!, userRoles);
 
-            storedRefreshToken.IsRevoked = true;
-            storedRefreshToken.RevokedAt = DateTime.UtcNow;
-
-            var newRefreshToken = _tokenService.GenerateRefreshToken();
-            var hashedNewRefreshToken = _tokenService.HashToken(newRefreshToken);
-
-            var newRefreshTokenEnity = new RefreshToken
-            {
-                Token = hashedNewRefreshToken,
-                UserId = user.Id,
-                CreatedAt = DateTime.UtcNow,
-                ExpiresAt = DateTime.UtcNow.AddDays(7),
-                IsRevoked = false
-            };
-
-            _context.RefreshTokens.Add(newRefreshTokenEnity);
-            await _context.SaveChangesAsync();
+            var newAccessToken = _tokenService.GenerateToken(user.Id, user.UserName!, userRoles);
 
             var expiresIn = _jwtConfig.AccessTokenExpirationMinutes * 60;
 
             var dto = new RefreshTokenResponseDto
             {
-                AccessToken = newToken,
+                AccessToken = newAccessToken,
                 ExpiresIn = expiresIn,
             };
 

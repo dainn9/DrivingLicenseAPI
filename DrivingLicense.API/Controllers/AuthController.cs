@@ -2,6 +2,8 @@
 using DrivingLicense.Application.DTOs.Auth.request;
 using DrivingLicense.Application.DTOs.Auth.response;
 using DrivingLicense.Application.Interfaces;
+using DrivingLicense.Infrastructure.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DrivingLicense.API.Controllers
@@ -30,7 +32,7 @@ namespace DrivingLicense.API.Controllers
             return Ok(ApiResponse<LoginResponseDto>.SuccessResponse(loginDto));
         }
 
-        //[Authorize(Roles = AppRoles.Administrator)]
+        [Authorize(Roles = AppRoles.Administrator)]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDto request)
         {
@@ -57,6 +59,20 @@ namespace DrivingLicense.API.Controllers
             });
 
             return Ok(ApiResponse<RefreshTokenResponseDto>.SuccessResponse(refreshDto));
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await _authService.LogoutAsync();
+            Response.Cookies.Delete("refreshToken", new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None
+            });
+
+            return Ok(ApiResponse<object>.SuccessResponse());
         }
     }
 }

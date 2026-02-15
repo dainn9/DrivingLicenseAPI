@@ -8,5 +8,6 @@ namespace DrivingLicense.Application.Interfaces
         Task<(LoginResponseDto dto, string refreshToken)> LoginAsync(LoginRequestDto request);
         Task<RegisterResponseDto> RegisterAsync(RegisterRequestDto request);
         Task<(RefreshTokenResponseDto dto, string refreshToken)> RefreshTokenAsync(string refreshToken);
+        Task LogoutAsync();
     }
 }
