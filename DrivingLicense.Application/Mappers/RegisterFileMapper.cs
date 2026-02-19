@@ -35,6 +35,7 @@ namespace DrivingLicense.Application.Mappers
                 Address = entity.Student.Address,
                 Nationality = entity.Student.Nationality,
                 IdentityCard = entity.Student.IdentityCard,
+                LicenseTypeId = entity.LicenseType?.Id,
                 LicenseTypeName = entity.LicenseType?.LicenseTypeName ?? string.Empty,
                 CourseName = entity.Course?.CourseName ?? string.Empty,
                 StatusCode = entity.Status.ToCode(),
