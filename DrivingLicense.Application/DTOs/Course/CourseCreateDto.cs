@@ -7,7 +7,7 @@ namespace DrivingLicense.Application.DTOs.Course
     {
         [Required]
         [MaxLength(100)]
-        [RegularExpression(@".*\S.*", ErrorMessage = "Field cannot be empty or whitespace.")]
+        [RegularExpression(@".*\S.*", ErrorMessage = "Course name cannot be empty or whitespace.")]
         public string CourseName { get; set; } = string.Empty;
 
         [Required]

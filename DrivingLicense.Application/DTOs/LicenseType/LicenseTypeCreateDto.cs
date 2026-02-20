@@ -6,12 +6,12 @@ namespace DrivingLicense.Application.DTOs.LicenseType
     {
         [Required]
         [MaxLength(50)]
-        [RegularExpression(@".*\S.*", ErrorMessage = "Field cannot be empty or whitespace.")]
+        [RegularExpression(@".*\S.*", ErrorMessage = "License type name cannot be empty or whitespace.")]
         public string Name { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(250)]
-        [RegularExpression(@".*\S.*", ErrorMessage = "Field cannot be empty or whitespace.")]
+        [RegularExpression(@".*\S.*", ErrorMessage = "Description cannot be empty or whitespace.")]
         public string Description { get; set; } = string.Empty;
     }
 }
