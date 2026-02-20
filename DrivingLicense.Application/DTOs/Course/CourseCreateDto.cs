@@ -18,7 +18,7 @@ namespace DrivingLicense.Application.DTOs.Course
         public DateTime EndDate { get; set; }
 
         [Required]
-        [Range(1, int.MaxValue, ErrorMessage = "Quantity must be at least 1.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Capacity must be at least 1.")]
         public int Capacity { get; set; }
 
         [Required]
