@@ -6,7 +6,7 @@ namespace DrivingLicense.Application.DTOs.Student
     public class StudentUpdateDto
     {
         [MaxLength(50)]
-        [RegularExpression(@".*\S.*", ErrorMessage = "Field cannot be empty or whitespace.")]
+        [RegularExpression(@".*\S.*", ErrorMessage = "Full name cannot be empty or whitespace.")]
         public string FullName { get; set; } = string.Empty;
 
         public Gender Gender { get; set; } = Gender.Male;
@@ -22,10 +22,10 @@ namespace DrivingLicense.Application.DTOs.Student
         public string? Email { get; set; }
 
         [MaxLength(200)]
-        [RegularExpression(@".*\S.*", ErrorMessage = "Field cannot be empty or whitespace.")]
+        [RegularExpression(@".*\S.*", ErrorMessage = "Address cannot be empty or whitespace.")]
         public string Address { get; set; } = string.Empty;
 
-        [RegularExpression(@".*\S.*", ErrorMessage = "Field cannot be empty or whitespace.")]
+        [RegularExpression(@".*\S.*", ErrorMessage = "Nationality cannot be empty or whitespace.")]
         public string Nationality { get; set; } = string.Empty;
 
         [MaxLength(12)]
