@@ -1,4 +1,5 @@
 using DrivingLicense.Application.DTOs.Course;
+using DrivingLicense.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace DrivingLicense.Application.Validators
@@ -7,8 +8,8 @@ namespace DrivingLicense.Application.Validators
     {
         public static ValidationResult? ValidateDates(object _, ValidationContext context)
         {
-            DateTime startDate;
-            DateTime endDate;
+            DateOnly startDate;
+            DateOnly endDate;
 
             switch (context.ObjectInstance)
             {
@@ -24,13 +25,27 @@ namespace DrivingLicense.Application.Validators
                     return ValidationResult.Success;
             }
 
-            if (startDate.Date < DateTime.Today)
+            var today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+            if (startDate < today)
                 return new ValidationResult("StartDate must be today or later.");
 
             if (startDate >= endDate)
                 return new ValidationResult("EndDate must be after startdate.");
 
             return ValidationResult.Success;
+        }
+
+        public static bool IsValidStatusTransition(CourseStatus current, CourseStatus next)
+        {
+            return current switch
+            {
+                CourseStatus.Open => next == CourseStatus.Ongoing || next == CourseStatus.Closed,
+                CourseStatus.Ongoing => next == CourseStatus.Completed || next == CourseStatus.Closed,
+                CourseStatus.Completed => next == CourseStatus.Closed,
+                CourseStatus.Closed => false,
+                _ => false,
+            };
         }
     }
 }

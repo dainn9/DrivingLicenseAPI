@@ -6,8 +6,8 @@ namespace DrivingLicense.Domain.Entities
     public class Course : BaseEntity
     {
         public string CourseName { get; set; } = null!;
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public DateOnly StartDate { get; set; }
+        public DateOnly EndDate { get; set; }
         public int Capacity { get; set; }
         public CourseStatus Status { get; set; }
         public Guid LicenseTypeId { get; set; }

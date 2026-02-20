@@ -12,11 +12,11 @@ namespace DrivingLicense.Application.DTOs.Course
         public string CourseName { get; set; } = string.Empty;
 
         [Required]
-        public DateTime StartDate { get; set; }
+        public DateOnly StartDate { get; set; }
 
         [Required]
         [CustomValidation(typeof(CourseValidator), nameof(CourseValidator.ValidateDates))]
-        public DateTime EndDate { get; set; }
+        public DateOnly EndDate { get; set; }
 
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "Capacity must be at least 1.")]

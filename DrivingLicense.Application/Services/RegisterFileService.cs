@@ -160,7 +160,9 @@ namespace DrivingLicense.Application.Services
                 if (entity.CourseId == null)
                     throw new ConflictException("Register file has not been assigned to a course.");
 
-                if (entity.Course!.StartDate > DateTime.UtcNow)
+                var today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+                if (entity.Course!.StartDate > today)
                     throw new ConflictException("Course has not started yet.");
             }
 
