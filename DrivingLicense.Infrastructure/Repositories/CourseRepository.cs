@@ -1,5 +1,6 @@
 
 using DrivingLicense.Domain.Entities;
+using DrivingLicense.Domain.Enums;
 using DrivingLicense.Domain.Interfaces;
 using DrivingLicense.Infrastructure.Data;
 using DrivingLicense.Infrastructure.Repositories.Common;
@@ -37,5 +38,7 @@ namespace DrivingLicense.Infrastructure.Repositories
         public async Task<bool> ExistsByIdAsync(Guid id)
             => await _context.Courses.AsNoTracking().AnyAsync(c => c.Id == id);
 
+        public async Task<List<Course>> GetCourseByLicenseTypeIdAsync(Guid licenseTypeId, CourseStatus courseStatus)
+            => await _context.Courses.AsNoTracking().Where(c => c.LicenseTypeId == licenseTypeId && c.Status == courseStatus).ToListAsync();
     }
 }

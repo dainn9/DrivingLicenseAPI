@@ -1,9 +1,9 @@
-
 using DrivingLicense.Application.Common.Exceptions;
 using DrivingLicense.Application.Common.Paging;
 using DrivingLicense.Application.DTOs.Course;
 using DrivingLicense.Application.Interfaces;
 using DrivingLicense.Application.Mappers;
+using DrivingLicense.Domain.Enums;
 
 namespace DrivingLicense.Application.Services
 {
@@ -71,6 +71,13 @@ namespace DrivingLicense.Application.Services
             if (exists == null)
                 throw new NotFoundException("Course not found.");
 
+            if (exists.Status != CourseStatus.Open)
+                throw new ConflictException("Only open courses can be updated.");
+
+            var hasStudents = await _uow.RegisterFile.AnyByCourseIdAsync(id);
+            if (hasStudents)
+                throw new ConflictException("Cannot update course because it already has students.");
+
             var nameExists = await _uow.Courses.ExistsByNameAsync(name: dto.CourseName, excludeId: id);
             if (nameExists)
                 throw new ConflictException("Course with the same name already exists.");
@@ -83,6 +90,16 @@ namespace DrivingLicense.Application.Services
             exists.MapFromUpdateDto(dto);
             _uow.Courses.Update(exists);
             await _uow.CommitAsync();
+        }
+
+        public async Task<IEnumerable<CourseDropDownDto>> GetOpenCourseByLicenseType(Guid licenseTypeId)
+        {
+            var courses = await _uow.Courses.GetCourseByLicenseTypeIdAsync(licenseTypeId, Domain.Enums.CourseStatus.Open);
+            return courses.Select(c => new CourseDropDownDto
+            {
+                Id = c.Id,
+                CourseName = c.CourseName
+            }).ToList();
         }
     }
 }

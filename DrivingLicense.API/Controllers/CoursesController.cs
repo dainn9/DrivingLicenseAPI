@@ -44,6 +44,13 @@ namespace DrivingLicense.API.Controllers
 
         }
 
+        [HttpGet("open")]
+        public async Task<IActionResult> GetOpenCourseByLicenseType([FromQuery] Guid licenseTypeId)
+        {
+            var courses = await _courseService.GetOpenCourseByLicenseType(licenseTypeId);
+            return Ok(ApiResponse<IEnumerable<CourseDropDownDto>>.SuccessResponse(courses));
+        }
+
         [Authorize(Roles = AppRoles.Administrator)]
         [HttpPut("{courseId:guid}")]
         public async Task<IActionResult> Update(Guid courseId, [FromBody] CourseUpdateDto dto)
