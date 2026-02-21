@@ -7,5 +7,7 @@ namespace DrivingLicense.Domain.Interfaces
         Task<(List<RegisterFile>, int)> GetPageAsync(int pageNumber, int pageSize, string? searchTerm = null);
         Task<int> CountByCourseIdAsync(Guid courseId, Guid? excludeId = null);
         Task<RegisterFile?> GetDetailByIdAsync(Guid id);
+        Task<bool> AnyByCourseIdAsync(Guid courseId);
+
     }
 }

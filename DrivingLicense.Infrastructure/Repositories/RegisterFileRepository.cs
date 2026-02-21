@@ -12,6 +12,9 @@ namespace DrivingLicense.Infrastructure.Repositories
         {
         }
 
+        public async Task<bool> AnyByCourseIdAsync(Guid courseId)
+            => await _context.RegisterFiles.AnyAsync(rf => rf.CourseId == courseId);
+
         public async Task<int> CountByCourseIdAsync(Guid courseId, Guid? excludeId = null)
             => await _context.RegisterFiles.AsNoTracking().CountAsync(rf => rf.CourseId == courseId && (excludeId == null || rf.Id != excludeId));
 
