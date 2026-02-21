@@ -1,5 +1,4 @@
 using DrivingLicense.Application.Common.ApiResponses;
-using DrivingLicense.Application.DTOs.Common;
 using DrivingLicense.Application.DTOs.LicenseType;
 using DrivingLicense.Application.Interfaces;
 using DrivingLicense.Infrastructure.Authentication;
