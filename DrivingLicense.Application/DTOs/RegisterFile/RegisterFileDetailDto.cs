@@ -15,6 +15,7 @@ namespace DrivingLicense.Application.DTOs.RegisterFile
         public string IdentityCard { get; set; } = string.Empty;
         public Guid? LicenseTypeId { get; set; }
         public string? LicenseTypeName { get; set; }
+        public Guid? CourseId { get; set; }
         public string? CourseName { get; set; }
         public string StatusCode { get; set; } = string.Empty;
         public string StatusName { get; set; } = string.Empty;
