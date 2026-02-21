@@ -107,6 +107,9 @@ namespace DrivingLicense.Application.Services
             if (entity.Status != RegisterFileStatus.Approved)
                 throw new ConflictException("Only approved register files can be assigned to a course.");
 
+            if (entity.CourseId == dto.CourseId)
+                return;
+
             var course = await _uow.Courses.GetByIdAsync(dto.CourseId);
             if (course == null)
                 throw new NotFoundException("Course not found.");
@@ -118,9 +121,6 @@ namespace DrivingLicense.Application.Services
 
             if (registeredCount >= course.Capacity)
                 throw new ConflictException("Class is already full.");
-
-            if (entity.CourseId == dto.CourseId)
-                return;
 
             entity.CourseId = dto.CourseId;
             _uow.RegisterFile.Update(entity);
