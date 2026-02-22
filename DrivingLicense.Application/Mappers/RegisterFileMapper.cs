@@ -27,14 +27,18 @@ namespace DrivingLicense.Application.Mappers
             return new RegisterFileDetailDto
             {
                 Id = entity.Id,
-                FullName = entity.Student!.FullName,
-                Gender = entity.Student.Gender,
-                DateOfBirth = entity.Student.DateOfBirth,
-                PhoneNumber = entity.Student.PhoneNumber,
-                Email = entity.Student.Email ?? string.Empty,
-                Address = entity.Student.Address,
-                Nationality = entity.Student.Nationality,
-                IdentityCard = entity.Student.IdentityCard,
+                StudentInfo = new StudentInfo
+                {
+                    FullName = entity.Student!.FullName,
+                    Gender = entity.Student.Gender,
+                    DateOfBirth = entity.Student.DateOfBirth,
+                    PhoneNumber = entity.Student.PhoneNumber,
+                    Email = entity.Student.Email ?? string.Empty,
+                    Address = entity.Student.Address,
+                    Nationality = entity.Student.Nationality,
+                    IdentityCard = entity.Student.IdentityCard,
+
+                },
                 LicenseTypeId = entity.LicenseType?.Id,
                 LicenseTypeName = entity.LicenseType?.LicenseTypeName ?? string.Empty,
                 CourseId = entity.CourseId,
