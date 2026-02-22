@@ -10,14 +10,18 @@ namespace DrivingLicense.Application.Mappers
             return new StudentDto
             {
                 Id = entity.Id,
-                FullName = entity.FullName,
-                Gender = entity.Gender,
-                DateOfBirth = entity.DateOfBirth,
-                PhoneNumber = entity.PhoneNumber,
-                Email = entity.Email,
-                Address = entity.Address,
-                Nationality = entity.Nationality,
-                IdentityCard = entity.IdentityCard,
+                StudentInfo = new StudentInfo
+                {
+                    FullName = entity.FullName,
+                    Gender = entity.Gender,
+                    DateOfBirth = entity.DateOfBirth,
+                    PhoneNumber = entity.PhoneNumber,
+                    Email = entity.Email,
+                    Address = entity.Address,
+                    Nationality = entity.Nationality,
+                    IdentityCard = entity.IdentityCard,
+                }
+
             };
         }
 
