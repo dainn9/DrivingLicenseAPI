@@ -31,16 +31,15 @@ namespace DrivingLicense.API.Controllers
         [HttpGet("{registerFileId:guid}")]
         public async Task<IActionResult> GetById(Guid registerFileId)
         {
-            var registerFile = await _registerFileService.GetByIdAsync(registerFileId);
-            return Ok(ApiResponse<RegisterFileDto>.SuccessResponse(registerFile));
-        }
-
-        [HttpGet("{registerFileId:guid}/detail")]
-        public async Task<IActionResult> GetDetailById(Guid registerFileId)
-        {
             var registerFile = await _registerFileService.GetDetailByIdAsync(registerFileId);
             return Ok(ApiResponse<RegisterFileDetailDto>.SuccessResponse(registerFile));
         }
+
+        //[HttpGet("{registerFileId:guid}/detail")]
+        //public async Task<IActionResult> GetDetailById(Guid registerFileId)
+        //{
+
+        //}
 
         [HttpGet]
         public async Task<IActionResult> GetPage([FromQuery] PaginationParams pageParams, [FromQuery] string? searchTerm = null)
