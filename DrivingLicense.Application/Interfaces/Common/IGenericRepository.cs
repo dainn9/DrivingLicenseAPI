@@ -1,6 +1,6 @@
 using DrivingLicense.Domain.Entities.Common;
 
-namespace DrivingLicense.Domain.Interfaces
+namespace DrivingLicense.Application.Interfaces
 {
     public interface IGenericRepository<T> where T : BaseEntity
     {

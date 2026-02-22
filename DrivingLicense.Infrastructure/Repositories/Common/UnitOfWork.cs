@@ -1,5 +1,4 @@
 using DrivingLicense.Application.Interfaces;
-using DrivingLicense.Domain.Interfaces;
 using DrivingLicense.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore.Storage;
 

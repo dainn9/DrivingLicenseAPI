@@ -1,6 +1,4 @@
-﻿using DrivingLicense.Infrastructure.Authentication;
-
-namespace DrivingLicense.Application.Interfaces
+﻿namespace DrivingLicense.Application.Interfaces
 {
     public interface IRefreshTokenService
     {

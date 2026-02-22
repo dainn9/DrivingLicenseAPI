@@ -2,7 +2,6 @@ using DrivingLicense.API.Middlewares;
 using DrivingLicense.Application.Common.ApiResponses;
 using DrivingLicense.Application.Interfaces;
 using DrivingLicense.Application.Services;
-using DrivingLicense.Domain.Interfaces;
 using DrivingLicense.Infrastructure.Authentication;
 using DrivingLicense.Infrastructure.Data;
 using DrivingLicense.Infrastructure.Data.Seed;

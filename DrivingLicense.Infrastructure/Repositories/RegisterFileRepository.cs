@@ -1,5 +1,5 @@
-﻿using DrivingLicense.Domain.Entities;
-using DrivingLicense.Domain.Interfaces;
+﻿using DrivingLicense.Application.Interfaces;
+using DrivingLicense.Domain.Entities;
 using DrivingLicense.Infrastructure.Data;
 using DrivingLicense.Infrastructure.Repositories.Common;
 using Microsoft.EntityFrameworkCore;

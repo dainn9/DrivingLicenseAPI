@@ -1,6 +1,3 @@
-
-using DrivingLicense.Domain.Interfaces;
-
 namespace DrivingLicense.Application.Interfaces
 {
     public interface IUnitOfWork : IDisposable
