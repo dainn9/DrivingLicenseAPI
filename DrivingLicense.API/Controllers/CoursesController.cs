@@ -32,7 +32,7 @@ namespace DrivingLicense.API.Controllers
         [HttpGet("{courseId:guid}")]
         public async Task<IActionResult> GetById(Guid courseId)
         {
-            var course = await _courseService.GetByIdAsync(courseId);
+            var course = await _courseService.GetCourseDetailAsync(courseId);
             return Ok(ApiResponse<CourseDto>.SuccessResponse(course));
         }
 
@@ -50,6 +50,7 @@ namespace DrivingLicense.API.Controllers
             var courses = await _courseService.GetOpenCourseByLicenseType(licenseTypeId);
             return Ok(ApiResponse<IEnumerable<CourseDropDownDto>>.SuccessResponse(courses));
         }
+
 
         [Authorize(Roles = AppRoles.Administrator)]
         [HttpPut("{courseId:guid}")]
