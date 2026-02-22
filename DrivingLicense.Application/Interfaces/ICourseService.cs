@@ -10,5 +10,6 @@ namespace DrivingLicense.Application.Interfaces
         Task<CourseDto> CreateAsync(CourseCreateDto dto);
         Task UpdateAsync(Guid id, CourseUpdateDto dto);
         Task<IEnumerable<CourseDropDownDto>> GetOpenCourseByLicenseType(Guid licenseTypeId);
+        Task<CourseDto> GetCourseDetailAsync(Guid id);
     }
 }

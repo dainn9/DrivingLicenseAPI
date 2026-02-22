@@ -93,13 +93,13 @@ namespace DrivingLicense.Application.Services
         }
 
         public async Task<IEnumerable<CourseDropDownDto>> GetOpenCourseByLicenseType(Guid licenseTypeId)
+            => await _uow.Courses.GetCourseByLicenseTypeIdAsync(licenseTypeId, Domain.Enums.CourseStatus.Open);
+
+        public async Task<CourseDto> GetCourseDetailAsync(Guid id)
         {
-            var courses = await _uow.Courses.GetCourseByLicenseTypeIdAsync(licenseTypeId, Domain.Enums.CourseStatus.Open);
-            return courses.Select(c => new CourseDropDownDto
-            {
-                Id = c.Id,
-                CourseName = c.CourseName
-            }).ToList();
+            var dto = await _uow.Courses.GetDetailAsync(id);
+
+            return dto ?? throw new NotFoundException("Course not found.");
         }
     }
 }

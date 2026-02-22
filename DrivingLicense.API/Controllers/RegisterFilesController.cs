@@ -35,12 +35,6 @@ namespace DrivingLicense.API.Controllers
             return Ok(ApiResponse<RegisterFileDetailDto>.SuccessResponse(registerFile));
         }
 
-        //[HttpGet("{registerFileId:guid}/detail")]
-        //public async Task<IActionResult> GetDetailById(Guid registerFileId)
-        //{
-
-        //}
-
         [HttpGet]
         public async Task<IActionResult> GetPage([FromQuery] PaginationParams pageParams, [FromQuery] string? searchTerm = null)
         {
