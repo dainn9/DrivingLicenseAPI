@@ -8,8 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DrivingLicense.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
+    [Route("api/[controller]")]
     public class StudentsController : ControllerBase
     {
         private readonly IStudentService _studentService;

@@ -8,8 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DrivingLicense.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
+    [Route("api/[controller]")]
     public class RegisterFilesController : ControllerBase
     {
         private readonly IRegisterFileService _registerFileService;

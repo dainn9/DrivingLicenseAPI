@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DrivingLicense.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class CoursesController : ControllerBase

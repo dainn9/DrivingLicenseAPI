@@ -1,24 +1,23 @@
 ﻿using DrivingLicense.Application.Common.ApiResponses;
 using DrivingLicense.Application.DTOs.Common;
 using DrivingLicense.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DrivingLicense.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class LookupsController : ControllerBase
     {
         private readonly ILicenseTypeService _licenseTypeService;
-        private readonly ICourseService _courseService;
 
         public LookupsController(
-            ILicenseTypeService licenseTypeService,
-            ICourseService courseService
+            ILicenseTypeService licenseTypeService
            )
         {
             _licenseTypeService = licenseTypeService;
-            _courseService = courseService;
         }
 
         [HttpGet("license-types")]
